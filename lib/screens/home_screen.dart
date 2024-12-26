@@ -3,36 +3,78 @@ import 'goals_screen.dart';
 import 'focus_screen.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Align')),
-      body: Center(
+      appBar: AppBar(
+        title: Text('Align'),
+        centerTitle: true,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => GoalsScreen()),
-                );
-              },
-              child: Text('Set Goals'),
+            Text(
+              "Welcome back!",
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 8),
+            Text(
+              "Small steps lead to big achievements.",
+              style: TextStyle(fontSize: 16, color: Colors.grey[600]),
             ),
             SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => FocusScreen()),
-                );
-              },
-              child: Text('Focus Analysis'),
+            _buildNavigationCard(
+              context,
+              title: "Set Goals",
+              subtitle: "Plan and track your goals",
+              iconData: Icons.checklist,
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => GoalsScreen()),
+              ),
+            ),
+            SizedBox(height: 20),
+            _buildNavigationCard(
+              context,
+              title: "Focus Analysis",
+              subtitle: "Measure your productivity",
+              iconData: Icons.insights,
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => FocusScreen()),
+              ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNavigationCard(BuildContext context,
+      {required String title, required String subtitle, required IconData iconData, required VoidCallback onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            children: [
+              Icon(iconData, size: 40, color: Colors.blue),
+              SizedBox(width: 16),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 4),
+                  Text(subtitle, style: TextStyle(color: Colors.grey[600])),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

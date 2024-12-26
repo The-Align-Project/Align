@@ -28,14 +28,13 @@ void main() {
 }
 
 class AlignApp extends StatelessWidget {
-  const AlignApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Align',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        scaffoldBackgroundColor: Colors.white,
       ),
       home: HomeScreen(),
     );

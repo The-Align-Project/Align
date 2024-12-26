@@ -1,12 +1,6 @@
-
 class Goal {
-
-  String title;
-
+  final String title;
   bool isCompleted;
 
-
-
-  Goal({required this.title, required this.isCompleted});
-
+  Goal({required this.title, this.isCompleted = false});
 }
