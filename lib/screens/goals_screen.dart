@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../models/goal_model.dart';
 
 class GoalsScreen extends StatefulWidget {
+  const GoalsScreen({super.key});
+
   @override
   _GoalsScreenState createState() => _GoalsScreenState();
 }

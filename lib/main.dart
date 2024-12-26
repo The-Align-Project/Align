@@ -28,6 +28,8 @@ void main() {
 }
 
 class AlignApp extends StatelessWidget {
+  const AlignApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

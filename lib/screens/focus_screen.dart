@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class FocusScreen extends StatefulWidget {
+  const FocusScreen({super.key});
+
   @override
   _FocusScreenState createState() => _FocusScreenState();
 }
