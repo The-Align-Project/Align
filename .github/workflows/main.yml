@@ -41,7 +41,9 @@ jobs:
         run: flutter build appbundle
 
       - name: Install CocoaPods
-        run: pod install
+        run: |
+          cd ios
+          pod install
 
       - name: Build IPA
         run: flutter build ipa --no-codesign
