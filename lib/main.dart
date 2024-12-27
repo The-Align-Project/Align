@@ -1,8 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:productivity_app/screens/home_screen.dart';
+import 'package:provider/provider.dart';
+import 'providers/goal_provider.dart';
+import 'providers/ai_insights_provider.dart'; // Import the provider
+import 'screens/main_navigation.dart';
 
 void main() {
-  runApp(const ProductivityApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => GoalProvider()),
+        ChangeNotifierProvider(create: (_) => AIInsightsProvider()),  // Register the provider here
+      ],
+      child: const ProductivityApp(),
+    ),
+  );
 }
 
 class ProductivityApp extends StatelessWidget {
@@ -11,9 +22,14 @@ class ProductivityApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'AI Productivity Tool',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: const HomeScreen(),
+      theme: ThemeData(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        fontFamily: 'Roboto',
+      ),
+      home: const MainNavigation(),
     );
   }
 }
