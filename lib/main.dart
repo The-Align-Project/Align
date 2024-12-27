@@ -1,25 +1,3 @@
-// import 'package:flutter/material.dart';
-
-// import 'src/app.dart';
-// import 'src/settings/settings_controller.dart';
-// import 'src/settings/settings_service.dart';
-
-// void main() async {
-//   // Set up the SettingsController, which will glue user settings to multiple
-//   // Flutter Widgets.
-//   final settingsController = SettingsController(SettingsService());
-
-//   // Load the user's preferred theme while the splash screen is displayed.
-//   // This prevents a sudden theme change when the app is first displayed.
-//   await settingsController.loadSettings();
-
-//   // Run the app and pass in the SettingsController. The app listens to the
-//   // SettingsController for changes, then passes it further down to the
-//   // SettingsView.
-//   runApp(MyApp(settingsController: settingsController));
-// }
-
-
 import 'package:flutter/material.dart';
 import 'screens/home_screen.dart';
 
@@ -28,6 +6,8 @@ void main() {
 }
 
 class AlignApp extends StatelessWidget {
+  const AlignApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -35,7 +15,37 @@ class AlignApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
         scaffoldBackgroundColor: Colors.white,
+        // Update text theme to use 'titleLarge' instead of 'headline6'
+        brightness: Brightness.light, // default light theme
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.blue,
+          elevation: 4.0,
+        ),
+        textTheme: TextTheme(
+          titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.bold), // replaced headline6 with titleLarge
+          bodyMedium: TextStyle(fontSize: 16, color: Colors.black87),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+        ),
       ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        primarySwatch: Colors.blue,
+        scaffoldBackgroundColor: Colors.black,
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.blueGrey,
+          elevation: 4.0,
+        ),
+        textTheme: TextTheme(
+          titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white), // replaced headline6 with titleLarge
+          bodyMedium: TextStyle(fontSize: 16, color: Colors.white70),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.blueAccent),
+        ),
+      ),
+      themeMode: ThemeMode.system, // Use system-wide theme (light or dark)
       home: HomeScreen(),
     );
   }
