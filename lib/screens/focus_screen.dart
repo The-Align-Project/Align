@@ -24,10 +24,7 @@ class _FocusScreenState extends State<FocusScreen> {
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Please enter valid numbers.'),
-          backgroundColor: Colors.redAccent,
-        ),
+        SnackBar(content: Text('Please enter valid numbers.')),
       );
     }
   }
@@ -35,108 +32,79 @@ class _FocusScreenState extends State<FocusScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Focus Analysis'),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
+      appBar: AppBar(title: Text('Focus Analysis')),
+      body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
-              "Calculate your focus score",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.blueAccent,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 20),
-            _buildTextField(
+            TextField(
               controller: productiveTimeController,
-              labelText: 'Productive Time (hours)',
+              keyboardType: TextInputType.numberWithOptions(decimal: true),
+              decoration: InputDecoration(
+                labelText: 'Productive Time (hours)',
+                border: OutlineInputBorder(),
+                hintText: 'Enter the hours you were productive',
+              ),
             ),
             SizedBox(height: 16),
-            _buildTextField(
+            TextField(
               controller: totalTimeController,
-              labelText: 'Total Time (hours)',
+              keyboardType: TextInputType.numberWithOptions(decimal: true),
+              decoration: InputDecoration(
+                labelText: 'Total Time (hours)',
+                border: OutlineInputBorder(),
+                hintText: 'Enter the total hours you spent working',
+              ),
             ),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: calculateFocusScore,
-              style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
               child: Text('Calculate Focus Score'),
+              style: ElevatedButton.styleFrom(
+                minimumSize: Size(double.infinity, 48),
+                backgroundColor: Colors.blueAccent,
+              ),
             ),
-            SizedBox(height: 30),
-            if (showScore)
-              Column(
-                children: [
-                  AnimatedContainer(
-                    duration: Duration(milliseconds: 500),
-                    curve: Curves.easeInOut,
-                    height: 200,
-                    width: 200,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: LinearGradient(
-                        colors: [Colors.blue, Colors.lightBlueAccent],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
+            SizedBox(height: 20),
+            AnimatedContainer(
+              duration: Duration(milliseconds: 500),
+              curve: Curves.easeInOut,
+              height: showScore ? 200 : 0,
+              width: showScore ? 200 : 0,
+              child: showScore
+                  ? Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                        value: focusScore! / 100,
                       ),
-                    ),
-                    child: Center(
-                      child: Text(
+                    )
+                  : null,
+            ),
+            if (showScore && focusScore != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: Center(
+                  child: Column(
+                    children: [
+                      Text(
+                        'Your Focus Score:',
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
                         '${focusScore!.toStringAsFixed(2)}%',
                         style: TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: Colors.blue,
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                  SizedBox(height: 20),
-                  Text(
-                    'Your Focus Score',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey[800],
-                    ),
-                  ),
-                ],
+                ),
               ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String labelText,
-  }) {
-    return TextField(
-      controller: controller,
-      keyboardType: TextInputType.numberWithOptions(decimal: true),
-      decoration: InputDecoration(
-        labelText: labelText,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        filled: true,
-        fillColor: Colors.grey[100],
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.blueAccent, width: 2),
-          borderRadius: BorderRadius.circular(12),
         ),
       ),
     );

@@ -15,19 +15,19 @@ class AlignApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
         scaffoldBackgroundColor: Colors.white,
-        // Update text theme to use 'titleLarge' instead of 'headline6'
-        brightness: Brightness.light, // default light theme
+        brightness: Brightness.light,
         appBarTheme: AppBarTheme(
           backgroundColor: Colors.blue,
           elevation: 4.0,
         ),
         textTheme: TextTheme(
-          titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.bold), // replaced headline6 with titleLarge
+          titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           bodyMedium: TextStyle(fontSize: 16, color: Colors.black87),
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
         ),
+        iconTheme: IconThemeData(color: Colors.blue), // Ensures all icons are in sync
       ),
       darkTheme: ThemeData(
         brightness: Brightness.dark,
@@ -38,12 +38,13 @@ class AlignApp extends StatelessWidget {
           elevation: 4.0,
         ),
         textTheme: TextTheme(
-          titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white), // replaced headline6 with titleLarge
+          titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
           bodyMedium: TextStyle(fontSize: 16, color: Colors.white70),
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(backgroundColor: Colors.blueAccent),
         ),
+        iconTheme: IconThemeData(color: Colors.blueAccent), // Dark mode icon color
       ),
       themeMode: ThemeMode.system, // Use system-wide theme (light or dark)
       home: HomeScreen(),
