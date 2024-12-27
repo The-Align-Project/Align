@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
-import '../models/goal_model.dart';
+
+class Goal {
+  bool isCompleted;
+  String description;
+
+  Goal({required this.isCompleted, required this.description});
+}
 
 class GoalsScreen extends StatefulWidget {
   const GoalsScreen({super.key});
@@ -12,151 +18,105 @@ class _GoalsScreenState extends State<GoalsScreen> {
   final List<Goal> _goals = [];
   final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
   final TextEditingController _controller = TextEditingController();
+  DateTime? selectedDate;
 
   void _addGoal() {
     if (_controller.text.isNotEmpty) {
-      final newGoal = Goal(title: _controller.text);
+      final newGoal = Goal(isCompleted: false, description: _controller.text);
       setState(() {
         _goals.insert(0, newGoal);
         _listKey.currentState?.insertItem(0);
         _controller.clear();
+        selectedDate = null;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Goal added!'),
-            backgroundColor: Colors.green,
-          ),
+          SnackBar(content: Text('Goal added!'), backgroundColor: Colors.green),
         );
       });
     }
   }
 
-  void _deleteGoal(int index) {
-    final removedGoal = _goals[index];
-    setState(() {
-      _goals.removeAt(index);
-      _listKey.currentState?.removeItem(
-        index,
-        (context, animation) => _buildGoalItem(removedGoal, animation),
-      );
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Goal deleted!'),
-        backgroundColor: Colors.redAccent,
-      ),
-    );
-  }
-
-  Widget _buildGoalItem(Goal goal, Animation<double> animation) {
-    return SizeTransition(
-      sizeFactor: animation,
-      child: Card(
-        elevation: 4,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: ListTile(
-          leading: Icon(Icons.flag, color: Colors.blue),
-          title: Text(
-            goal.title,
-            style: TextStyle(fontWeight: FontWeight.w500),
-          ),
-          trailing: IconButton(
-            icon: Icon(Icons.delete, color: Colors.redAccent),
-            onPressed: () => _showDeleteDialog(_goals.indexOf(goal)),
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _showDeleteDialog(int index) {
-    showDialog(
+  void _selectDate() async {
+    final DateTime? pickedDate = await showDatePicker(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Delete Goal'),
-        content: Text('Are you sure you want to delete this goal?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              _deleteGoal(index);
-            },
-            child: Text('Delete', style: TextStyle(color: Colors.red)),
-          ),
-        ],
-      ),
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2024),
+      lastDate: DateTime(2025),
     );
+    if (pickedDate != null && pickedDate != selectedDate) {
+      setState(() {
+        selectedDate = pickedDate;
+      });
+    }
+  }
+
+  void _toggleGoalCompletion(int index) {
+    setState(() {
+      _goals[index].isCompleted = !_goals[index].isCompleted;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Set Your Goals'),
-        centerTitle: true,
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.blueAccent, Colors.lightBlue],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
+      appBar: AppBar(title: Text('Set Your Goals'), centerTitle: true),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _controller,
+                      decoration: InputDecoration(
+                        labelText: 'Enter a goal',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  ElevatedButton(
+                    onPressed: _addGoal,
+                    child: Text('Add'),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 16),
+            AnimatedList(
+              key: _listKey,
+              initialItemCount: _goals.length,
+              itemBuilder: (context, index, animation) {
+                final goal = _goals[index];
+                return _buildGoalItem(goal, index, animation);
+              },
+            ),
+          ],
         ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: _controller,
-                        decoration: InputDecoration(
-                          labelText: 'Enter a goal',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          filled: true,
-                          fillColor: Colors.white,
-                          focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.blueAccent, width: 2),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 12),
-                    ElevatedButton(
-                      onPressed: _addGoal,
-                      style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        padding:
-                            EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-                      ),
-                      child: Text('Add'),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: AnimatedList(
-                  key: _listKey,
-                  initialItemCount: _goals.length,
-                  itemBuilder: (context, index, animation) =>
-                      _buildGoalItem(_goals[index], animation),
-                ),
-              ),
-            ],
+      ),
+    );
+  }
+
+  Widget _buildGoalItem(Goal goal, int index, Animation<double> animation) {
+    return SizeTransition(
+      sizeFactor: animation,
+      child: Card(
+        margin: EdgeInsets.all(10),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        child: ListTile(
+          title: Text(
+            goal.description,
+            style: TextStyle(
+              decoration: goal.isCompleted ? TextDecoration.lineThrough : null,
+            ),
+          ),
+          subtitle: selectedDate != null ? Text('Due: ${selectedDate!.toLocal()}') : null,
+          trailing: Checkbox(
+            value: goal.isCompleted,
+            onChanged: (bool? value) {
+              _toggleGoalCompletion(index);
+            },
           ),
         ),
       ),
