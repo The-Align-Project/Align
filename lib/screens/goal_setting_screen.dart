@@ -1,82 +1,48 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
-import '../models/goal_model.dart';
-import '../providers/goal_provider.dart';
+import '../providers/progress_provider.dart';
 
 class GoalSettingScreen extends StatelessWidget {
   const GoalSettingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final goalProvider = Provider.of<GoalProvider>(context);
+    final progressProvider = Provider.of<ProgressProvider>(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Goal Setting'),
+    return CupertinoPageScaffold(
+      navigationBar: const CupertinoNavigationBar(
+        middle: Text('Set Your Goals'),
       ),
-      body: Padding(
+      child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Set Your Goals',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            // Display the list of goals
             Expanded(
               child: ListView.builder(
-                itemCount: goalProvider.goals.length,
+                itemCount: progressProvider.goalProgress.length,
                 itemBuilder: (context, index) {
-                  final goal = goalProvider.goals[index];
-                  return Card(
-                    elevation: 3,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    margin: const EdgeInsets.only(bottom: 12),
-                    child: ListTile(
-                      contentPadding: const EdgeInsets.all(16.0),
-                      title: Text(
-                        goal.title,
-                        style: const TextStyle(fontSize: 18),
-                      ),
-                      subtitle: Text(
-                        'Due by: ${goal.dueDate}',
-                        style: const TextStyle(color: Colors.grey),
-                      ),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.calendar_today, color: Colors.grey),
-                          const SizedBox(width: 8),
-                          IconButton(
-                            icon: const Icon(Icons.delete, color: Colors.red),
-                            onPressed: () {
-                              goalProvider.removeGoal(index);
-                            },
-                          ),
-                        ],
-                      ),
-                      onTap: () {
-                        // Optionally, navigate to a detail view to edit the goal
+                  final goalTitle =
+                      progressProvider.goalProgress.keys.toList()[index];
+                  return CupertinoListTile(
+                    title: Text(goalTitle),
+                    subtitle: Text(
+                        'Progress: ${progressProvider.goalProgress[goalTitle]?.toStringAsFixed(1)}%'),
+                    trailing: CupertinoButton(
+                      child: const Icon(CupertinoIcons.delete, color: CupertinoColors.destructiveRed),
+                      onPressed: () {
+                        progressProvider.removeGoal(goalTitle);
                       },
                     ),
                   );
                 },
               ),
             ),
-            // Add a button to add new goals
-            Padding(
-              padding: const EdgeInsets.only(top: 16.0),
-              child: ElevatedButton(
-                onPressed: () {
-                  // Navigate to a screen where the user can add a new goal
-                  _showAddGoalDialog(context);
-                },
-                child: const Text('Add New Goal'),
-              ),
+            const SizedBox(height: 16),
+            CupertinoButton.filled(
+              onPressed: () {
+                _showAddGoalDialog(context, progressProvider);
+              },
+              child: const Text('Add New Goal'),
             ),
           ],
         ),
@@ -84,46 +50,33 @@ class GoalSettingScreen extends StatelessWidget {
     );
   }
 
-  void _showAddGoalDialog(BuildContext context) {
-    final TextEditingController titleController = TextEditingController();
-    final TextEditingController dueDateController = TextEditingController();
+  void _showAddGoalDialog(
+      BuildContext context, ProgressProvider progressProvider) {
+    final TextEditingController goalController = TextEditingController();
 
-    showDialog(
+    showCupertinoDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
+        return CupertinoAlertDialog(
           title: const Text('Add New Goal'),
           content: Column(
-            mainAxisSize: MainAxisSize.min,
             children: [
-              TextField(
-                controller: titleController,
-                decoration: const InputDecoration(labelText: 'Goal Title'),
-              ),
-              TextField(
-                controller: dueDateController,
-                decoration: const InputDecoration(labelText: 'Due Date'),
-                keyboardType: TextInputType.datetime,
+              const SizedBox(height: 8),
+              CupertinoTextField(
+                controller: goalController,
+                placeholder: 'Goal Title',
               ),
             ],
           ),
           actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
+            CupertinoDialogAction(
+              onPressed: () => Navigator.pop(context),
               child: const Text('Cancel'),
             ),
-            TextButton(
+            CupertinoDialogAction(
               onPressed: () {
-                final String title = titleController.text;
-                final String dueDate = dueDateController.text;
-                if (title.isNotEmpty && dueDate.isNotEmpty) {
-                  final newGoal = Goal(
-                    title: title,
-                    dueDate: dueDate,
-                  );
-                  context.read<GoalProvider>().addGoal(newGoal);
+                if (goalController.text.isNotEmpty) {
+                  progressProvider.addGoal(goalController.text);
                   Navigator.pop(context);
                 }
               },

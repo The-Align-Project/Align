@@ -1,93 +1,68 @@
-import 'package:flutter/material.dart';
-import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
+import '../providers/progress_provider.dart';
+import '../providers/streak_provider.dart';
 
 class ProgressTrackingScreen extends StatelessWidget {
   const ProgressTrackingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Progress Tracking'),
+    final progressProvider = Provider.of<ProgressProvider>(context);
+    final streakProvider = Provider.of<StreakProvider>(context);
+
+    return CupertinoPageScaffold(
+      navigationBar: const CupertinoNavigationBar(
+        middle: Text('Track Your Progress'),
       ),
-      body: Padding(
+      child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Your Weekly Progress',
+              'Current Streak',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              '${streakProvider.streak} Days',
+              style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 32),
+            const Text(
+              'Goal Progress',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             Expanded(
-              child: BarChart(
-                BarChartData(
-                  alignment: BarChartAlignment.spaceAround,
-                  maxY: 10,
-                  barTouchData: BarTouchData(
-                    touchTooltipData: BarTouchTooltipData(
-                      tooltipBgColor: Colors.blueAccent,
-                      getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                        return BarTooltipItem(
-                          '${rod.y.toInt()} tasks completed',
-                          const TextStyle(color: Colors.white),
-                        );
+              child: ListView.builder(
+                itemCount: progressProvider.goalProgress.length,
+                itemBuilder: (context, index) {
+                  final goalTitle =
+                      progressProvider.goalProgress.keys.toList()[index];
+                  return CupertinoListTile(
+                    title: Text(goalTitle),
+                    subtitle: Text(
+                        'Progress: ${progressProvider.goalProgress[goalTitle]?.toStringAsFixed(1)}%'),
+                    trailing: CupertinoButton(
+                      child: const Icon(CupertinoIcons.delete, color: CupertinoColors.destructiveRed),
+                      onPressed: () {
+                        progressProvider.removeGoal(goalTitle);
                       },
                     ),
-                  ),
-                  titlesData: FlTitlesData(
-                    leftTitles: SideTitles(showTitles: true),
-                    bottomTitles: SideTitles(
-                      showTitles: true,
-                      getTitles: (value) {
-                        switch (value.toInt()) {
-                          case 0:
-                            return 'Mon';
-                          case 1:
-                            return 'Tue';
-                          case 2:
-                            return 'Wed';
-                          case 3:
-                            return 'Thu';
-                          case 4:
-                            return 'Fri';
-                          case 5:
-                            return 'Sat';
-                          case 6:
-                            return 'Sun';
-                          default:
-                            return '';
-                        }
-                      },
-                    ),
-                  ),
-                  borderData: FlBorderData(show: false),
-                  barGroups: _generateBarGroups(), // Mock data
-                ),
+                  );
+                },
               ),
+            ),
+            CupertinoButton.filled(
+              onPressed: () {
+                streakProvider.incrementStreak();
+              },
+              child: const Text('Complete Task and Increase Streak'),
             ),
           ],
         ),
       ),
     );
-  }
-
-  List<BarChartGroupData> _generateBarGroups() {
-    // Mock progress data for each day of the week
-    final mockData = [3, 5, 7, 8, 4, 6, 5];
-    return List.generate(mockData.length, (index) {
-      return BarChartGroupData(
-        x: index,
-        barRods: [
-          BarChartRodData(
-            y: mockData[index].toDouble(),
-            colors: [Colors.blue],
-            width: 16,
-            borderRadius: BorderRadius.circular(4),
-          ),
-        ],
-      );
-    });
   }
 }

@@ -1,19 +1,34 @@
 import 'package:flutter/material.dart';
 
 class FocusProvider with ChangeNotifier {
-  int _focusScore = 85; // Mock focus score
-  List<double> _focusTrends = [4, 6, 5, 7, 6, 8, 9]; // Mock trend data
+  double _focusScore = 75.0; // Mock focus score
+  List<Map<String, dynamic>> _taskDurations = [
+    {'taskName': 'Writing Report', 'duration': 120},
+    {'taskName': 'Design Mockup', 'duration': 90},
+    {'taskName': 'Team Meeting', 'duration': 60},
+  ]; // Mock task durations
+  Map<String, int> _distractions = {
+    'Social Media': 5,
+    'Emails': 3,
+    'Frequent Breaks': 4,
+  }; // Mock distractions
 
-  int get focusScore => _focusScore;
-  List<double> get focusTrends => _focusTrends;
+  double get focusScore => _focusScore;
+  List<Map<String, dynamic>> get taskDurations => _taskDurations;
+  Map<String, int> get distractions => _distractions;
 
-  void updateFocusScore(int score) {
+  void updateFocusScore(double score) {
     _focusScore = score;
     notifyListeners();
   }
 
-  void updateFocusTrends(List<double> trends) {
-    _focusTrends = trends;
+  void addTaskDuration(String taskName, int duration) {
+    _taskDurations.add({'taskName': taskName, 'duration': duration});
+    notifyListeners();
+  }
+
+  void updateDistractions(String distraction, int count) {
+    _distractions[distraction] = count;
     notifyListeners();
   }
 }

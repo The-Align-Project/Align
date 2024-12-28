@@ -1,69 +1,37 @@
 import 'package:flutter/material.dart';
-import 'focus_analysis_screen.dart';
+import 'package:provider/provider.dart';
+import 'home_screen.dart';
+import 'auth_screen.dart';
 import 'goal_setting_screen.dart';
 import 'progress_tracking_screen.dart';
+import 'gamification_screen.dart';
 import 'ai_insights_screen.dart';
+import '../providers/auth_provider.dart';
 
-class MainNavigation extends StatefulWidget {
+class MainNavigation extends StatelessWidget {
   const MainNavigation({super.key});
 
   @override
-  _MainNavigationState createState() => _MainNavigationState();
-}
-
-class _MainNavigationState extends State<MainNavigation> {
-  int _currentIndex = 0;
-
-  final List<Widget> _screens = [
-    const FocusAnalysisScreen(),
-    const GoalSettingScreen(),
-    const ProgressTrackingScreen(),
-    const AIInsightsScreen(),
-  ];
-
-  final List<String> _titles = [
-    'Focus Analysis',
-    'Goal Setting',
-    'Progress Tracking',
-    'AI Insights',
-  ];
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(_titles[_currentIndex]),
-      ),
-      body: _screens[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.analytics),
-            label: 'Focus',
+    return Consumer<AuthProvider>(
+      builder: (ctx, authProvider, _) {
+        return MaterialApp(
+          title: 'Productivity App',
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+            visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.flag),
-            label: 'Goals',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.show_chart),
-            label: 'Progress',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.lightbulb),
-            label: 'Insights',
-          ),
-        ],
-      ),
+          home: authProvider.isAuthenticated() ? const HomeScreen() : const AuthScreen(),
+          routes: {
+            '/home': (ctx) => const HomeScreen(),
+            '/auth': (ctx) => const AuthScreen(),
+            '/goal-setting': (ctx) => const GoalSettingScreen(),
+            '/progress-tracking': (ctx) => const ProgressTrackingScreen(),
+            '/gamification': (ctx) => const GamificationScreen(),
+            '/ai-insights': (ctx) => const AIInsightScreen(), // Ensure this route is correctly linked
+          },
+        );
+      },
     );
   }
 }
