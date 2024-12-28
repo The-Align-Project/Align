@@ -2,11 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/ai_insight_provider.dart';
-import '../providers/data_provider.dart';
-import 'goal_setting_screen.dart';
-import 'progress_tracking_screen.dart';
-import 'gamification_screen.dart';
-import 'ai_insights_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

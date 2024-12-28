@@ -8,9 +8,6 @@ import 'screens/progress_tracking_screen.dart';
 import 'screens/gamification_screen.dart';
 import 'screens/ai_insights_screen.dart';
 import 'providers/auth_provider.dart';
-import 'providers/data_provider.dart';
-import 'providers/ai_insight_provider.dart';
-import 'providers/time_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
