@@ -1,31 +1,48 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'core/providers/focus_provider.dart';
-import 'ui/screens/home_screen.dart';
+import 'screens/auth_screen.dart';
+import 'screens/home_screen.dart';
+import 'screens/goal_setting_screen.dart';
+import 'screens/progress_tracking_screen.dart';
+import 'screens/gamification_screen.dart';
+import 'screens/ai_insights_screen.dart';
+import 'providers/auth_provider.dart';
 
-void main() {
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => FocusProvider()),
-      ],
-      child: const MyApp(),
-    ),
-  );
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(); // Initialize Firebase
+
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Focus Analyzer',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        useMaterial3: true,
+    return ChangeNotifierProvider(
+      create: (ctx) => AuthProvider(),
+      child: Consumer<AuthProvider>(
+        builder: (ctx, authProvider, _) {
+          return MaterialApp(
+            title: 'Productivity App',
+            theme: ThemeData(
+              primarySwatch: Colors.blue,
+              visualDensity: VisualDensity.adaptivePlatformDensity,
+            ),
+            home: authProvider.isAuthenticated() ? const HomeScreen() : const AuthScreen(),
+            routes: {
+              '/home': (ctx) => const HomeScreen(),
+              '/auth': (ctx) => const AuthScreen(),
+              '/goal-setting': (ctx) => const GoalSettingScreen(),
+              '/progress-tracking': (ctx) => const ProgressTrackingScreen(),
+              '/gamification': (ctx) => const GamificationScreen(),
+              '/ai-insights': (ctx) => const AIInsightScreen(),
+            },
+          );
+        },
       ),
-      home: const HomeScreen(),
     );
   }
 }
