@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../core/providers/focus_provider.dart';
+import '../../core/models/focus_session.dart';
 
 class FocusStats extends StatelessWidget {
   const FocusStats({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final focusProvider = context.watch<FocusProvider>();
+    final focusProvider = Provider.of<FocusProvider>(context);
     final theme = Theme.of(context);
 
     final totalDuration = _calculateTotalDuration(focusProvider.sessions);
@@ -106,52 +108,5 @@ class FocusStats extends StatelessWidget {
     final hours = duration.inHours;
     final minutes = duration.inMinutes % 60;
     return '${hours}h ${minutes}m';
-  }
-}
-
-class _StatCard extends StatelessWidget {
-  final IconData icon;
-  final String value;
-  final String label;
-  final Color color;
-
-  const _StatCard({
-    Key? key,
-    required this.icon,
-    required this.value,
-    required this.label,
-    required this.color,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        children: [
-          Icon(icon, color: color),
-          const SizedBox(height: 8),
-          Text(
-            value,
-            style: theme.textTheme.titleLarge?.copyWith(
-              color: color,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          Text(
-            label,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }

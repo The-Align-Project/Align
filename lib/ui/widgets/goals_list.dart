@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 import '../../core/providers/goal_provider.dart';
+import '../../core/models/goal.dart';
+import '../widgets/goal_form.dart';
+import '../widgets/goal_details.dart';
 
 class GoalsList extends StatelessWidget {
   const GoalsList({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final goalProvider = context.watch<GoalProvider>();
+    final goalProvider = Provider.of<GoalProvider>(context);
     
     if (goalProvider.goals.isEmpty) {
       return Center(
@@ -37,8 +42,8 @@ class GoalsList extends StatelessWidget {
 
     return ListView.separated(
       padding: const EdgeInsets.all(16),
-      itemCount: goalProvider.goals.length,
       separatorBuilder: (context, index) => const SizedBox(height: 12),
+      itemCount: goalProvider.goals.length,
       itemBuilder: (context, index) {
         final goal = goalProvider.goals[index];
         return GoalCard(goal: goal);
@@ -51,7 +56,7 @@ class GoalsList extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
-      builder: (context) => const AddGoalSheet(),
+      builder: (context) => const GoalForm(),
     );
   }
 }
