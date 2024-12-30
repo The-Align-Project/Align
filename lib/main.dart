@@ -1,51 +1,48 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'screens/auth_screen.dart';
 import 'screens/home_screen.dart';
+import 'screens/goal_setting_screen.dart';
+import 'screens/progress_tracking_screen.dart';
+import 'screens/gamification_screen.dart';
+import 'screens/ai_insights_screen.dart';
+import 'providers/auth_provider.dart';
 
-void main() {
-  runApp(AlignApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(); // Initialize Firebase
+
+  runApp(const MyApp());
 }
 
-class AlignApp extends StatelessWidget {
-  const AlignApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Align',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        scaffoldBackgroundColor: Colors.white,
-        brightness: Brightness.light, 
-        appBarTheme: AppBarTheme(
-          backgroundColor: Colors.blue,
-          elevation: 4.0,
-        ),
-        textTheme: TextTheme(
-          titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          bodyMedium: TextStyle(fontSize: 16, color: Colors.black87),
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-        ),
+    return ChangeNotifierProvider(
+      create: (ctx) => AuthProvider(),
+      child: Consumer<AuthProvider>(
+        builder: (ctx, authProvider, _) {
+          return MaterialApp(
+            title: 'Productivity App',
+            theme: ThemeData(
+              primarySwatch: Colors.blue,
+              visualDensity: VisualDensity.adaptivePlatformDensity,
+            ),
+            home: authProvider.isAuthenticated() ? const HomeScreen() : const AuthScreen(),
+            routes: {
+              '/home': (ctx) => const HomeScreen(),
+              '/auth': (ctx) => const AuthScreen(),
+              '/goal-setting': (ctx) => const GoalSettingScreen(),
+              '/progress-tracking': (ctx) => const ProgressTrackingScreen(),
+              '/gamification': (ctx) => const GamificationScreen(),
+              '/ai-insights': (ctx) => const AIInsightScreen(),
+            },
+          );
+        },
       ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        primarySwatch: Colors.blue,
-        scaffoldBackgroundColor: Colors.black,
-        appBarTheme: AppBarTheme(
-          backgroundColor: Colors.blueGrey,
-          elevation: 4.0,
-        ),
-        textTheme: TextTheme(
-          titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
-          bodyMedium: TextStyle(fontSize: 16, color: Colors.white70),
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(backgroundColor: Colors.blueAccent),
-        ),
-      ),
-      themeMode: ThemeMode.system, // Use system-wide theme (light or dark)
-      home: HomeScreen(),
     );
   }
 }
