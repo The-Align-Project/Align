@@ -36,34 +36,34 @@ class GoalsPage extends StatelessWidget {
             ),
           ],
         ),
-        Consumer<GoalProvider>(
-          builder: (context, provider, child) {
-            return SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  final goal = provider.goals[index];
-                  return Card(
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    child: ListTile(
-                      title: Text(goal.title),
-                      subtitle: Text(
-                        '${goal.tasks.where((t) => t.completed).length}/'
-                        '${goal.tasks.length} tasks completed',
+        SliverPadding(
+          padding: const EdgeInsets.all(16),
+          sliver: Consumer<GoalProvider>(
+            builder: (context, provider, child) {
+              return SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    final goal = provider.goals[index];
+                    return Card(
+                      margin: const EdgeInsets.only(bottom: 8),
+                      child: ListTile(
+                        title: Text(goal.title),
+                        subtitle: Text(
+                          '${goal.tasks.where((t) => t.completed).length}/'
+                          '${goal.tasks.length} tasks completed',
+                        ),
+                        trailing: CircularProgressIndicator(
+                          value: goal.progress,
+                          backgroundColor: Colors.grey[200],
+                        ),
                       ),
-                      trailing: CircularProgressIndicator(
-                        value: goal.progress,
-                        backgroundColor: Colors.grey[200],
-                      ),
-                    ),
-                  );
-                },
-                childCount: provider.goals.length,
-              ),
-            );
-          },
+                    );
+                  },
+                  childCount: provider.goals.length,
+                ),
+              );
+            },
+          ),
         ),
       ],
     );
