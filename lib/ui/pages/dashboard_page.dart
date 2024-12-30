@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import '../widgets/focus_tracker.dart';
+import '../widgets/focus_stats.dart';
+import '../widgets/today_goals.dart';
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({Key? key}) : super(key: key);
@@ -15,12 +18,12 @@ class DashboardPage extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
-              children: const [
-                FocusTracker(),
-                SizedBox(height: 16),
-                FocusStats(),
-                SizedBox(height: 16),
-                TodayGoals(),
+              children: [
+                const FocusTracker(),
+                const SizedBox(height: 16),
+                const FocusStats(),
+                const SizedBox(height: 16),
+                const TodayGoals(),
               ],
             ),
           ),

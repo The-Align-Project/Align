@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../widgets/focus_tracker.dart';
-import '../widgets/goal_list.dart';
-import '../widgets/productivity_insights.dart';
-import '../widgets/focus_stats.dart';
+import '../pages/dashboard_page.dart';
+import '../pages/goals_page.dart';
+import '../pages/insights_page.dart';
+import '../pages/settings_page.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -15,11 +14,11 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
 
-  final List<Widget> _pages = [
-    const DashboardPage(),
-    const GoalsPage(),
-    const InsightsPage(),
-    const SettingsPage(),
+  final List<Widget> _pages = const [
+    DashboardPage(),
+    GoalsPage(),
+    InsightsPage(),
+    SettingsPage(),
   ];
 
   @override
