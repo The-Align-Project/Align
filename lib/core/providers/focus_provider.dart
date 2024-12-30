@@ -8,6 +8,7 @@ class FocusProvider with ChangeNotifier {
 
   bool get isTracking => _isTracking;
   List<FocusSession> get sessions => _sessions;
+  DateTime? get currentSessionStart => _currentSessionStart;
 
   void startTracking() {
     _isTracking = true;
@@ -32,12 +33,10 @@ class FocusProvider with ChangeNotifier {
   }
 
   double _calculateFocusScore() {
-    // Implement focus score calculation logic
     return 0.0;
   }
 
   Map<String, dynamic> _collectMetrics() {
-    // Implement metrics collection logic
     return {};
   }
 }
