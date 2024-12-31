@@ -3,8 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../../core/providers/goal_provider.dart';
 import '../../core/models/goal.dart';
-import '../widgets/goal_form.dart';
-import '../widgets/goal_details.dart';
+import 'goal_form.dart';
+import 'goal_details.dart';
 
 class GoalsList extends StatelessWidget {
   const GoalsList({Key? key}) : super(key: key);
